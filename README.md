@@ -15,8 +15,8 @@ Also contains common object such as `OrderDTO` and error handling code (for now 
 
 ### order-svc (Order Microservice)
 
-Entry point of Order Fulfillment workflow. Contains Workflow Definition `OrderFulfillmentWorkflow` and
-implementation `OrderFulfillmentWorkflowImpl`
+Entry point of Order Fulfillment workflow. Contains Workflow Definition `OrderWorkflow` and
+implementation `OrderWorkflowImpl`
 
 Code is organized in the package based on the clean/hexagonal architecture principles.
 
@@ -38,21 +38,10 @@ Code is organized in the package based on the clean/hexagonal architecture princ
 - persistence: Spring JPA related code.
 - resource: REST API specific implementation.
 
-### inventory-svc (Inventory Microservice)
-
-Contains Activity implementation `InventoryActivitiesImpl` and worker `InventoryWorker`
-
-Code is organized in the package based on the clean/hexagonal architecture principles.
-
-- application: contains business logic. There is no direct dependency on Temporal code.
-- common: common configuration such as Spring bean definition
-- infrastructure: Temporal specific code such as Activity and Worker.
-- persistence: Spring JPA related code.
-- resource: REST API specific implementation.
 
 ### shipment-svc (Shipment Microservice)
 
-Contains Activity implementation `ShippingActivitiesImpl` and worker `ShipmentWorker`
+Contains Activity implementation `ShipmentActivitiesImpl` and worker `ShipmentWorker`
 
 Code is organized in the package based on the clean/hexagonal architecture principles.
 
@@ -70,34 +59,4 @@ Make sure you have Docker installed locally
 git clone https://github.com/temporalio/docker-compose.git
 cd  docker-compose
 docker-compose up
-````
-
-# Build and Test
-
-To build `./gradlew clean build`
-
-To start workflow execution
-
-```commandline
-curl --location --request POST 'localhost:8081/orders' \
---header 'Content-Type: application/json' \
---data-raw '{
-  "productId": 30979484,
-  "price": 28.99,
-  "quantity": 2
-}'
-```
-
-To view list of payments
-
-```commandline
-curl --location --request GET 'localhost:8083/payments' \
---header 'Accept: application/json'
-```
-
-To view list of inventory
-
-```commandline
-curl --location --request GET 'localhost:8082/inventories' \
---header 'Accept: application/json'
 ```
