@@ -3,7 +3,7 @@ package dev.example.order.workflow;
 import dev.example.common.activities.OrderActivities;
 import dev.example.common.model.OrderDTO;
 import dev.example.common.model.Status;
-import dev.example.order.repository.OrderRepository;
+import dev.example.order.service.OrderService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -12,22 +12,26 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @AllArgsConstructor
 public class OrderActivitiesImpl  implements OrderActivities {
-    private final OrderRepository orderRepository;
+    private final OrderService orderService;
+
+    @Override
+    public void initiateOrder(OrderDTO orderDTO) {
+        // to be implemented, right now it's initiated at the controller layer
+    }
+
     @Override
     public void completeOrder(OrderDTO order) {
         log.info("Completing the order");
-        final var orderDB= orderRepository.findById(order.getOrderId())
-                .orElseThrow(()->new RuntimeException("Order not found with id "+order.getOrderId()));
+        final var orderDB= orderService.getOrder(order.getOrderId());
         orderDB.setStatus(Status.COMPLETED);
-        orderRepository.save(orderDB);
+        orderService.saveOrder(orderDB);
     }
 
     @Override
     public void failOrder(OrderDTO order) {
         log.info("Failing the order");
-        final var orderDB= orderRepository.findById(order.getOrderId())
-                .orElseThrow(()->new RuntimeException("Order not found with id "+order.getOrderId()));
+        final var orderDB= orderService.getOrder(order.getOrderId());
         orderDB.setStatus(Status.FAILED);
-        orderRepository.save(orderDB);
+        orderService.saveOrder(orderDB);
     }
 }

@@ -6,9 +6,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @Slf4j
 @SpringBootApplication
-public class PaymentSvcApplication {
+public class ShipmentSvcApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(PaymentSvcApplication.class, args);
+    SpringApplication.run(ShipmentSvcApplication.class, args);
   }
 }

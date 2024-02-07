@@ -1,10 +1,11 @@
-package dev.example.common.workflow;
+package dev.example.common.workflow.impl;
 
 import dev.example.common.TaskQueue;
 import dev.example.common.activities.OrderActivities;
 import dev.example.common.activities.PaymentActivities;
 import dev.example.common.activities.ShipmentActivities;
 import dev.example.common.model.OrderDTO;
+import dev.example.common.workflow.OrderWorkflow;
 import io.temporal.activity.ActivityOptions;
 import io.temporal.activity.LocalActivityOptions;
 import io.temporal.common.RetryOptions;
@@ -12,11 +13,12 @@ import io.temporal.failure.ActivityFailure;
 import io.temporal.workflow.Saga;
 import io.temporal.workflow.Workflow;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 
 @Slf4j
-//@Component
+@Component
 public class OrderWorkflowImpl implements OrderWorkflow {
     private final ActivityOptions paymentActivityOptions =
             ActivityOptions.newBuilder()
@@ -34,7 +36,7 @@ public class OrderWorkflowImpl implements OrderWorkflow {
     private final LocalActivityOptions localActivityOptions =
             LocalActivityOptions.newBuilder()
                     .setStartToCloseTimeout(Duration.ofMinutes(1))
-                    .setRetryOptions(RetryOptions.newBuilder().setMaximumAttempts(10).build())
+                    .setRetryOptions(RetryOptions.newBuilder().setMaximumAttempts(3).build())
                     .build();
     private final OrderActivities orderActivities =
             Workflow.newLocalActivityStub(OrderActivities.class, localActivityOptions);
@@ -50,6 +52,9 @@ public class OrderWorkflowImpl implements OrderWorkflow {
         Saga.Options sagaOptions = new Saga.Options.Builder().setParallelCompensation(true).build();
         Saga saga = new Saga(sagaOptions);
         try {
+            log.info("Order initiated");
+            orderActivities.initiateOrder(orderDTO);
+            saga.addCompensation(orderActivities::failOrder,orderDTO);
             log.info("Debit payment initiated");
             paymentActivities.debitPayment(orderDTO);
             saga.addCompensation(paymentActivities::reversePayment,orderDTO);
