@@ -15,6 +15,8 @@ public class Order {
     private String productName;
     private Long productId;
     private  Double price;
+    @Enumerated(value = EnumType.STRING)
+    @Column(columnDefinition = "ENUM('INITIATED','COMPLETED','FAILED') DEFAULT 'INITIATED'",nullable = false)
     private Status status;
     @PrePersist
     void persist(){

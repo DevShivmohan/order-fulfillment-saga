@@ -9,6 +9,7 @@ import dev.example.common.workflow.OrderWorkflow;
 import io.temporal.client.WorkflowClient;
 import io.temporal.client.WorkflowOptions;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/order")
 @AllArgsConstructor
+@Slf4j
 public class OrderController {
     private final OrderRepository orderRepository;
     @PostMapping
@@ -26,8 +28,11 @@ public class OrderController {
                 .build();
         final OrderWorkflow workflow = workflowClient.newWorkflowStub(OrderWorkflow.class, options);
         final var dbOrder=orderRepository.save(mapToEntity(orderDTO));
+        log.info("Order initiated "+dbOrder);
         orderDTO.setOrderId(dbOrder.getId());
+        orderDTO.setStatus(dbOrder.getStatus());
         WorkflowClient.start(workflow::processOrder,orderDTO);
+        log.info("Worker started");
         return ResponseEntity.status(HttpStatus.CREATED).body(orderDTO);
     }
 

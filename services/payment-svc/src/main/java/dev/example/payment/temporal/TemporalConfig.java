@@ -2,7 +2,6 @@ package dev.example.payment.temporal;
 
 import dev.example.common.activities.PaymentActivities;
 import dev.example.common.workflow.OrderWorkflowImpl;
-import dev.example.payment.workflow.PaymentActivitiesImpl;
 import io.temporal.client.WorkflowClient;
 import io.temporal.serviceclient.WorkflowServiceStubs;
 import io.temporal.serviceclient.WorkflowServiceStubsOptions;

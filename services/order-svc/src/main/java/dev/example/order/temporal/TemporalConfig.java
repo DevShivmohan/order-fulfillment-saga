@@ -1,6 +1,6 @@
 package dev.example.order.temporal;
 
-import dev.example.order.workflow.OrderActivitiesImpl;
+import dev.example.common.activities.OrderActivities;
 import dev.example.common.workflow.OrderWorkflowImpl;
 import io.temporal.client.WorkflowClient;
 import io.temporal.serviceclient.WorkflowServiceStubs;
@@ -17,7 +17,7 @@ import javax.annotation.PostConstruct;
 @Slf4j
 public class TemporalConfig {
     @Autowired
-    private OrderActivitiesImpl orderActivity;
+    private OrderActivities orderActivity;
     @PostConstruct
     public void startWorkers() {
         var stub = WorkflowServiceStubs.newServiceStubs(WorkflowServiceStubsOptions.newBuilder()

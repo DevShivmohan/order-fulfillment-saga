@@ -15,6 +15,7 @@ public class OrderActivitiesImpl  implements OrderActivities {
     private final OrderRepository orderRepository;
     @Override
     public void completeOrder(OrderDTO order) {
+        log.info("Completing the order");
         final var orderDB= orderRepository.findById(order.getOrderId())
                 .orElseThrow(()->new RuntimeException("Order not found with id "+order.getOrderId()));
         orderDB.setStatus(Status.COMPLETED);
@@ -23,6 +24,7 @@ public class OrderActivitiesImpl  implements OrderActivities {
 
     @Override
     public void failOrder(OrderDTO order) {
+        log.info("Failing the order");
         final var orderDB= orderRepository.findById(order.getOrderId())
                 .orElseThrow(()->new RuntimeException("Order not found with id "+order.getOrderId()));
         orderDB.setStatus(Status.FAILED);

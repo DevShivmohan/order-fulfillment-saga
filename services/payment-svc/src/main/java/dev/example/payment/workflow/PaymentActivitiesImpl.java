@@ -17,6 +17,7 @@ public class PaymentActivitiesImpl implements PaymentActivities {
     private final PaymentRepository paymentRepository;
     @Override
     public void debitPayment(OrderDTO orderDTO) {
+        log.info("Debiting payment");
         paymentRepository.save(mapToEntityCompletion(orderDTO));
     }
 
@@ -30,6 +31,7 @@ public class PaymentActivitiesImpl implements PaymentActivities {
     }
     @Override
     public void reversePayment(OrderDTO orderDTO) {
+        log.info("Reversing payment");
         final var dbPayments=paymentRepository.findAllByOrderId(orderDTO.getOrderId());
         dbPayments.stream()
                 .forEach(payment -> {

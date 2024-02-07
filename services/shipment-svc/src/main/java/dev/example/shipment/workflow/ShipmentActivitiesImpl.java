@@ -16,6 +16,7 @@ public class ShipmentActivitiesImpl implements ShipmentActivities {
     private final ShipmentRepository shipmentRepository;
     @Override
     public void placeShipment(OrderDTO orderDTO) {
+        log.info("Placing shipment");
         shipmentRepository.save(mapToEntity(orderDTO));
     }
     private Shipment mapToEntity(OrderDTO orderDTO){
@@ -27,6 +28,7 @@ public class ShipmentActivitiesImpl implements ShipmentActivities {
 
     @Override
     public void cancelShipment(OrderDTO orderDTO) {
+        log.info("Canceling shipment");
         final var dbShipment=shipmentRepository.findAllShipmentByOrderId(orderDTO.getOrderId());
         dbShipment.stream()
                 .forEach(shipment -> {

@@ -13,6 +13,8 @@ public class Shipment {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private Long orderId;
+    @Enumerated(value = EnumType.STRING)
+    @Column(columnDefinition = "ENUM('FAILED','COMPLETED') DEFAULT 'COMPLETED'",nullable = false)
     private Status status;
     void persist(){
         this.id=0L;

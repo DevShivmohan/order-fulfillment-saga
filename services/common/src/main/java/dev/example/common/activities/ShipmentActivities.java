@@ -2,12 +2,12 @@ package dev.example.common.activities;
 
 import dev.example.common.model.OrderDTO;
 import io.temporal.activity.ActivityInterface;
-import io.temporal.workflow.WorkflowMethod;
+import io.temporal.activity.ActivityMethod;
 
 @ActivityInterface
 public interface ShipmentActivities {
-    @WorkflowMethod
+    @ActivityMethod
     void placeShipment(final OrderDTO orderDTO);
-    @WorkflowMethod
+    @ActivityMethod
     void cancelShipment(final OrderDTO orderDTO);
 }
