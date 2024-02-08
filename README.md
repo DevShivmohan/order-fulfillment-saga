@@ -4,7 +4,6 @@
 ![image](https://github.com/DevShivmohan/distributed-transactions-microservice-saga/assets/72655528/550bb7a2-3175-4c9d-bd84-88de9853c45e)
 ![image](https://github.com/DevShivmohan/distributed-transactions-microservice-saga/assets/72655528/c2786fb1-66ab-4b76-aaa5-cb0e74fa7884)
 
-
 # Introduction
 
 Code example for the
@@ -62,8 +61,11 @@ Code is organized in the package based on the clean/hexagonal architecture princ
 
 Make sure you have Docker installed locally
 
-````commandline
+``` commandline
 git clone https://github.com/temporalio/docker-compose.git
 cd  docker-compose
 docker-compose up
 ```
+
+# Live testing with success and failure case
+- Live testing [Video link](https://drive.google.com/file/d/1KqO6jbDc9qZnAMMfK9K35LSdop-ypxOb/view?usp=drive_link).
