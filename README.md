@@ -1,3 +1,10 @@
+# Implementation workflow to demonstrate the code execution
+
+![image](https://github.com/DevShivmohan/distributed-transactions-microservice-saga/assets/72655528/6e39b9c2-ad99-4ab6-89c7-8b5f37ea5f63)
+![image](https://github.com/DevShivmohan/distributed-transactions-microservice-saga/assets/72655528/550bb7a2-3175-4c9d-bd84-88de9853c45e)
+![image](https://github.com/DevShivmohan/distributed-transactions-microservice-saga/assets/72655528/c2786fb1-66ab-4b76-aaa5-cb0e74fa7884)
+
+
 # Introduction
 
 Code example for the
