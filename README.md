@@ -69,3 +69,8 @@ docker-compose up
 
 # Live testing with success and failure case
 - Live testing [Video link](https://drive.google.com/file/d/1KqO6jbDc9qZnAMMfK9K35LSdop-ypxOb/view?usp=drive_link).
+
+
+**Add saga workflows like this, first add failure case and then business logic**
+![image](https://github.com/DevShivmohan/distributed-transactions-microservice-saga/assets/72655528/039e12a7-0503-42ca-bbf0-25354bec5295)
+
