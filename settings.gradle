@@ -1,0 +1,4 @@
+rootProject.name = 'saga-choreography'
+include 'common-service'
+include 'order-service'
+
