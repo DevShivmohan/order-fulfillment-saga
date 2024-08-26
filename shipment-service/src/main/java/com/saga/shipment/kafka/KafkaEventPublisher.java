@@ -1,4 +1,4 @@
-package com.saga.choreography.kafka;
+package com.saga.shipment.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,6 +23,7 @@ public class KafkaEventPublisher {
             kafkaTemplate.send(topicName, objectMapper.writeValueAsString(KafkaEventPayload.builder().kafkaEventType(eventType).payload(orderResponseDto).build()));
         } catch (JsonProcessingException e) {
             log.error(e.toString());
+            throw new RuntimeException(e.getMessage());
         }
     }
 }

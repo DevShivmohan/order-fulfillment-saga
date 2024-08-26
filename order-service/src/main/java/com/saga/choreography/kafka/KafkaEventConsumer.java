@@ -40,4 +40,20 @@ public class KafkaEventConsumer {
         }
         log.info("Transaction completed with order id {}", kafkaEventPayload.getPayload().getId());
     }
+
+
+    @RetryableTopic(
+            attempts = "5",
+            backoff = @Backoff(delay = 20000),
+            topicSuffixingStrategy = TopicSuffixingStrategy.SUFFIX_WITH_INDEX_VALUE
+    )
+    @KafkaListener(topics = "payment-failed", groupId = "order-transactions")
+    public void listenKafkaEventForFailedPayment(@Payload String message,
+                                 @Header(KafkaHeaders.RECEIVED_PARTITION) int partition) throws JsonProcessingException {
+        final KafkaEventPayload kafkaEventPayload = objectMapper.readValue(message, KafkaEventPayload.class);
+        if (kafkaEventPayload.getKafkaEventType() == KafkaEventType.PAYMENT_FAILED) {
+            orderService.failOrder(kafkaEventPayload.getPayload());
+        }
+        log.info("Transaction failed with order id {}", kafkaEventPayload.getPayload().getId());
+    }
 }

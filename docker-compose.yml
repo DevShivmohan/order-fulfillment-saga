@@ -26,13 +26,61 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
-  create_topic_weather-realtime-data:
+  create_topic_order-initiated:
     image: confluentinc/cp-kafka
     depends_on:
       - kafka
     environment:
       KAFKA_BROKER: kafka:9092
       KAFKA_TOPIC: order-initiated
+    command: >
+      /bin/bash -c "echo 'Creating Kafka topic'; 
+      /usr/bin/kafka-topics --create --topic $KAFKA_TOPIC --partitions 1 --replication-factor 1 
+      --if-not-exists --zookeeper $KAFKA_BROKER 
+      --config retention.ms=604800000"  # Adding retention configuration
+  create_topic_payment_captured:
+    image: confluentinc/cp-kafka
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_BROKER: kafka:9092
+      KAFKA_TOPIC: payment-captured
+    command: >
+      /bin/bash -c "echo 'Creating Kafka topic'; 
+      /usr/bin/kafka-topics --create --topic $KAFKA_TOPIC --partitions 1 --replication-factor 1 
+      --if-not-exists --zookeeper $KAFKA_BROKER 
+      --config retention.ms=604800000"  # Adding retention configuration
+  create_topic_payment_failed:
+    image: confluentinc/cp-kafka
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_BROKER: kafka:9092
+      KAFKA_TOPIC: payment-failed
+    command: >
+      /bin/bash -c "echo 'Creating Kafka topic'; 
+      /usr/bin/kafka-topics --create --topic $KAFKA_TOPIC --partitions 1 --replication-factor 1 
+      --if-not-exists --zookeeper $KAFKA_BROKER 
+      --config retention.ms=604800000"  # Adding retention configuration
+  create_topic_shipment_placed:
+    image: confluentinc/cp-kafka
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_BROKER: kafka:9092
+      KAFKA_TOPIC: shipment-placed
+    command: >
+      /bin/bash -c "echo 'Creating Kafka topic'; 
+      /usr/bin/kafka-topics --create --topic $KAFKA_TOPIC --partitions 1 --replication-factor 1 
+      --if-not-exists --zookeeper $KAFKA_BROKER 
+      --config retention.ms=604800000"  # Adding retention configuration
+  create_topic_shipment_cancelled:
+    image: confluentinc/cp-kafka
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_BROKER: kafka:9092
+      KAFKA_TOPIC: shipment-cancelled
     command: >
       /bin/bash -c "echo 'Creating Kafka topic'; 
       /usr/bin/kafka-topics --create --topic $KAFKA_TOPIC --partitions 1 --replication-factor 1 
