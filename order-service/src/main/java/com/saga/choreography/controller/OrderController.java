@@ -1,6 +1,8 @@
 package com.saga.choreography.controller;
 
 import com.saga.choreography.dto.req.OrderRequestDto;
+import com.saga.choreography.event.KafkaEventType;
+import com.saga.choreography.kafka.KafkaEventPublisher;
 import com.saga.choreography.service.OrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,15 +14,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.saga.choreography.constants.KafkaEventConstants.KAFKA_TOPIC_ORDER_INITIATED;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/order")
 public class OrderController {
     private final OrderService orderService;
+    private final KafkaEventPublisher kafkaEventPublisher;
 
     @PostMapping
     public ResponseEntity<?> createOrder(@RequestBody final OrderRequestDto orderRequestDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createOrder(orderRequestDto));
+        final var order = orderService.createOrder(orderRequestDto);
+        kafkaEventPublisher.publishKafkaEvent(KAFKA_TOPIC_ORDER_INITIATED, KafkaEventType.ORDER_INITIATED, order);
+        return ResponseEntity.status(HttpStatus.CREATED).body(order);
     }
 
     @GetMapping("/{id}")

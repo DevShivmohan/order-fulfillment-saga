@@ -4,6 +4,7 @@ import com.saga.choreography.dto.OrderStatus;
 import com.saga.choreography.dto.req.OrderRequestDto;
 import com.saga.choreography.dto.res.OrderResponseDto;
 import com.saga.choreography.entity.Order;
+import com.saga.choreography.kafka.KafkaEventPublisher;
 import com.saga.choreography.repository.OrderRepository;
 import com.saga.choreography.service.OrderService;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final ModelMapper modelMapper;
+    private final KafkaEventPublisher kafkaEventPublisher;
 
     @Override
     public OrderResponseDto createOrder(OrderRequestDto orderRequestDto) {
