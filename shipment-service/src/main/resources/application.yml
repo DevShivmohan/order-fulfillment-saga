@@ -1,0 +1,18 @@
+server:
+  port: 8082
+  servlet:
+    context-path: /shipment-service/v1
+spring:
+  application:
+    name: shipment-service
+  datasource:
+    name: shipment-service
+    url: jdbc:mysql://localhost:3306/shipment_db
+    username: shiv
+    password: shiv
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
