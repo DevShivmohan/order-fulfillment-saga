@@ -38,7 +38,7 @@ public class ShipmentServiceImpl implements ShipmentService {
             log.warn("Shipment not placed yet with order id {}", orderResponseDto.getId());
             return null;
         }
-        shipmentPlaced.get().setStatus(ShipmentStatus.SUCCESS);
+        shipmentPlaced.get().setStatus(ShipmentStatus.FAILED);
         return modelMapper.map(shipmentRepository.saveAndFlush(shipmentPlaced.get()), ShipmentResponseDto.class);
     }
 }
