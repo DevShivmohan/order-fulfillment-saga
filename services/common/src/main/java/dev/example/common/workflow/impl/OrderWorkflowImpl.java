@@ -53,20 +53,20 @@ public class OrderWorkflowImpl implements OrderWorkflow {
         Saga saga = new Saga(sagaOptions);
         try {
             log.info("Order initiated");
+            saga.addCompensation(orderActivities::failOrder,orderDTO);
             orderActivities.initiateOrder(orderDTO);
-            saga.addCompensation(orderActivities::failOrder,orderDTO);
             log.info("Debit payment initiated");
-            paymentActivities.debitPayment(orderDTO);
             saga.addCompensation(paymentActivities::reversePayment,orderDTO);
+            paymentActivities.debitPayment(orderDTO);
             log.info("Shipment initiated");
-            shipmentActivities.placeShipment(orderDTO);
             saga.addCompensation(shipmentActivities::cancelShipment,orderDTO);
+            shipmentActivities.placeShipment(orderDTO);
             log.info("Order placing initiated");
-            orderActivities.completeOrder(orderDTO);
             saga.addCompensation(orderActivities::failOrder,orderDTO);
+            orderActivities.completeOrder(orderDTO);
             log.info("All activities completed");
         }catch (ActivityFailure activityFailure){
-            log.error("Activity failure "+activityFailure);
+            log.error("Activity failure {}",activityFailure);
             saga.compensate();
             throw activityFailure;
         }

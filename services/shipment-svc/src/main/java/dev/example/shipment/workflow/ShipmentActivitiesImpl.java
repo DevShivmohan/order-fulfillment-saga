@@ -14,13 +14,15 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class ShipmentActivitiesImpl implements ShipmentActivities {
     private final ShipmentService shipmentService;
+
     @Override
     public void placeShipment(OrderDTO orderDTO) {
         log.info("Placing shipment");
         shipmentService.saveShipment(mapToEntity(orderDTO));
     }
-    private Shipment mapToEntity(OrderDTO orderDTO){
-        Shipment shipment=new Shipment();
+
+    private Shipment mapToEntity(OrderDTO orderDTO) {
+        Shipment shipment = new Shipment();
         shipment.setOrderId(orderDTO.getOrderId());
         shipment.setStatus(Status.COMPLETED);
         return shipment;
@@ -29,11 +31,9 @@ public class ShipmentActivitiesImpl implements ShipmentActivities {
     @Override
     public void cancelShipment(OrderDTO orderDTO) {
         log.info("Canceling shipment");
-        final var dbShipment= shipmentService.getShipmentsByOrderId(orderDTO.getOrderId());
-        dbShipment.stream()
-                .forEach(shipment -> {
-                    shipment.setStatus(Status.FAILED);
-                });
+        final var dbShipment = shipmentService.getShipmentsByOrderId(orderDTO.getOrderId());
+        dbShipment
+                .forEach(shipment -> shipment.setStatus(Status.FAILED));
         shipmentService.saveAllAndFlush(dbShipment);
     }
 }
