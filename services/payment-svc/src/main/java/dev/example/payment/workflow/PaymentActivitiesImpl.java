@@ -9,12 +9,15 @@ import dev.example.payment.service.PaymentService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Component
 @AllArgsConstructor
 public class PaymentActivitiesImpl implements PaymentActivities {
     private final PaymentService paymentService;
+
+    @Transactional
     @Override
     public void debitPayment(OrderDTO orderDTO) {
         log.info("Debiting payment");
@@ -29,6 +32,8 @@ public class PaymentActivitiesImpl implements PaymentActivities {
         payment.setOperationCode(OperationCode.DEBIT);
         return payment;
     }
+
+    @Transactional
     @Override
     public void reversePayment(OrderDTO orderDTO) {
         log.info("Reversing payment");

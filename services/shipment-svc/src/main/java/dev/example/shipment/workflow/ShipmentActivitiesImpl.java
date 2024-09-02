@@ -8,6 +8,7 @@ import dev.example.shipment.service.ShipmentService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Slf4j
@@ -16,6 +17,7 @@ public class ShipmentActivitiesImpl implements ShipmentActivities {
     private final ShipmentService shipmentService;
 
     @Override
+    @Transactional
     public void placeShipment(OrderDTO orderDTO) {
         log.info("Placing shipment");
         shipmentService.saveShipment(mapToEntity(orderDTO));
@@ -28,6 +30,7 @@ public class ShipmentActivitiesImpl implements ShipmentActivities {
         return shipment;
     }
 
+    @Transactional
     @Override
     public void cancelShipment(OrderDTO orderDTO) {
         log.info("Canceling shipment");
