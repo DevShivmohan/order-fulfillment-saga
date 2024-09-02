@@ -25,7 +25,7 @@ public class PaymentActivitiesImpl implements PaymentActivities {
         final Payment payment=new Payment();
         payment.setStatus(Status.COMPLETED);
         payment.setOrderId(orderDTO.getOrderId());
-        payment.setPrice(orderDTO.getPrice()* orderDTO.getQuantity());
+        payment.setPrice(orderDTO.getPrice());
         payment.setOperationCode(OperationCode.DEBIT);
         return payment;
     }
