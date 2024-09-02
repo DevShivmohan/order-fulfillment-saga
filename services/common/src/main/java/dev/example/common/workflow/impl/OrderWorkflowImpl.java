@@ -49,8 +49,8 @@ public class OrderWorkflowImpl implements OrderWorkflow {
     public void processOrder(final OrderDTO orderDTO) {
         // Configure SAGA to run compensation activities in parallel
         log.info("Workflow initiated");
-        Saga.Options sagaOptions = new Saga.Options.Builder().setParallelCompensation(true).build();
-        Saga saga = new Saga(sagaOptions);
+        final Saga.Options sagaOptions = new Saga.Options.Builder().setParallelCompensation(true).build();
+        final Saga saga = new Saga(sagaOptions);
         try {
             log.info("Order initiated");
             saga.addCompensation(orderActivities::failOrder,orderDTO);

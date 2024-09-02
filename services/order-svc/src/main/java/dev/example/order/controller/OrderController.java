@@ -2,6 +2,7 @@ package dev.example.order.controller;
 
 import dev.example.common.model.OrderDTO;
 import dev.example.common.model.Status;
+import dev.example.order.dto.OrderRequestDto;
 import dev.example.order.entity.Order;
 import dev.example.order.service.OrderService;
 import dev.example.order.temporal.WorkflowOrchestrator;
@@ -19,11 +20,10 @@ public class OrderController {
     private final OrderService orderService;
     private final WorkflowOrchestrator workflowOrchestrator;
     @PostMapping
-    public ResponseEntity<?> placeOrder(@RequestBody OrderDTO orderDTO){
-        final var dbOrder= orderService.saveOrder(mapToEntity(orderDTO));
-        log.info("Order initiated "+dbOrder);
-        orderDTO.setOrderId(dbOrder.getId());
-        orderDTO.setStatus(dbOrder.getStatus());
+    public ResponseEntity<?> placeOrder(@RequestBody OrderRequestDto orderRequestDto){
+        final var dbOrder= orderService.saveOrder(mapToEntity(orderRequestDto));
+        log.info("Order initiated {}",dbOrder);
+        final var orderDTO = mapToOrderDto(dbOrder);
         workflowOrchestrator.createOrder(orderDTO);
         log.info("Worker started");
         return ResponseEntity.status(HttpStatus.CREATED).body(orderDTO);
@@ -39,12 +39,22 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.OK).body(orderService.getOrder(id));
     }
 
-    private Order mapToEntity(final OrderDTO orderDTO){
-        Order order=new Order();
+    private Order mapToEntity(final OrderRequestDto orderDTO){
+        final Order order=new Order();
         order.setProductName(orderDTO.getProductName());
         order.setProductId(orderDTO.getProductId());
         order.setPrice(orderDTO.getPrice());
         order.setStatus(Status.INITIATED);
         return order;
+    }
+
+    private OrderDTO mapToOrderDto(final Order order){
+        final OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setProductName(order.getProductName());
+        orderDTO.setProductId(order.getProductId());
+        orderDTO.setPrice(order.getPrice());
+        orderDTO.setStatus(order.getStatus());
+        orderDTO.setOrderId(order.getId());
+        return orderDTO;
     }
 }

@@ -13,6 +13,5 @@ public class OrderDTO {
   private Long productId;
   private String productName;
   private Double price;
-  private Double quantity;
   private Status status;
 }
