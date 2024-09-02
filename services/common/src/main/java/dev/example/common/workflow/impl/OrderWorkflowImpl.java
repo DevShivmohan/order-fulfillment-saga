@@ -33,13 +33,13 @@ public class OrderWorkflowImpl implements OrderWorkflow {
                     .setRetryOptions(RetryOptions.newBuilder().setMaximumAttempts(3).build())
                     .build();
 
-    private final LocalActivityOptions localActivityOptions =
+    private final LocalActivityOptions orderActivityOptions =
             LocalActivityOptions.newBuilder()
                     .setStartToCloseTimeout(Duration.ofMinutes(1))
                     .setRetryOptions(RetryOptions.newBuilder().setMaximumAttempts(3).build())
                     .build();
     private final OrderActivities orderActivities =
-            Workflow.newLocalActivityStub(OrderActivities.class, localActivityOptions);
+            Workflow.newLocalActivityStub(OrderActivities.class, orderActivityOptions);
 
     private final PaymentActivities paymentActivities =
             Workflow.newActivityStub(PaymentActivities.class, paymentActivityOptions);
