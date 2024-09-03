@@ -16,6 +16,7 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @AllArgsConstructor
@@ -31,6 +32,7 @@ public class KafkaEventConsumer {
             topicSuffixingStrategy = TopicSuffixingStrategy.SUFFIX_WITH_INDEX_VALUE
     )
     @KafkaListener(topics = "payment-captured", groupId = "order-transactions")
+    @Transactional
     public void listenKafkaEventForOrderInitiated(@Payload String message,
                                                   @Header(KafkaHeaders.RECEIVED_PARTITION) int partition) throws JsonProcessingException {
         final KafkaEventPayload kafkaEventPayload = objectMapper.readValue(message, KafkaEventPayload.class);
