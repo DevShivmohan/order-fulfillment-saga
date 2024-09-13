@@ -47,4 +47,19 @@ public class KafkaEventConsumer {
             kafkaEventPublisher.publishKafkaEvent(KafkaEventConstants.KAFKA_TOPIC_SHIPMENT_CANCELLED, KafkaEventType.SHIPMENT_CANCELED, kafkaEventPayload.getPayload());
         }
     }
+
+
+    @RetryableTopic(
+            attempts = "5",
+            backoff = @Backoff(delay = 20000),
+            topicSuffixingStrategy = TopicSuffixingStrategy.SUFFIX_WITH_INDEX_VALUE
+    )
+    @KafkaListener(topics = "order-failed", groupId = "order-transactions")
+    @Transactional
+    public void listenKafkaEventForOrderFailed(@Payload String message,
+                                                  @Header(KafkaHeaders.RECEIVED_PARTITION) int partition) throws JsonProcessingException {
+        final KafkaEventPayload kafkaEventPayload = objectMapper.readValue(message, KafkaEventPayload.class);
+        shipmentService.cancelShipment(kafkaEventPayload.getPayload());
+        kafkaEventPublisher.publishKafkaEvent(KafkaEventConstants.KAFKA_TOPIC_SHIPMENT_CANCELLED, KafkaEventType.SHIPMENT_CANCELED, kafkaEventPayload.getPayload());
+    }
 }

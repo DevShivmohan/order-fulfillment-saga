@@ -38,6 +38,19 @@ services:
       /usr/bin/kafka-topics --create --topic $KAFKA_TOPIC --partitions 1 --replication-factor 1 
       --if-not-exists --zookeeper $KAFKA_BROKER 
       --config retention.ms=604800000"  # Adding retention configuration
+
+  create_topic_order-failed:
+    image: confluentinc/cp-kafka
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_BROKER: kafka:9092
+      KAFKA_TOPIC: order-failed
+    command: >
+      /bin/bash -c "echo 'Creating Kafka topic'; 
+      /usr/bin/kafka-topics --create --topic $KAFKA_TOPIC --partitions 1 --replication-factor 1 
+      --if-not-exists --zookeeper $KAFKA_BROKER 
+      --config retention.ms=604800000"  # Adding retention configuration
   create_topic_payment_captured:
     image: confluentinc/cp-kafka
     depends_on:

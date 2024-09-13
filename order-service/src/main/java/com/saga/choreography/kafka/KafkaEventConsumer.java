@@ -15,6 +15,9 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import static com.saga.choreography.constants.KafkaEventConstants.KAFKA_TOPIC_ORDER_FAILED;
 
 @Component
 @AllArgsConstructor
@@ -22,6 +25,7 @@ import org.springframework.stereotype.Component;
 public class KafkaEventConsumer {
     private final ObjectMapper objectMapper;
     private final OrderService orderService;
+    private final KafkaEventPublisher kafkaEventPublisher;
 
     @RetryableTopic(
             attempts = "5",
@@ -29,16 +33,21 @@ public class KafkaEventConsumer {
             topicSuffixingStrategy = TopicSuffixingStrategy.SUFFIX_WITH_INDEX_VALUE
     )
     @KafkaListener(topics = "shipment-placed", groupId = "order-transactions")
+    @Transactional
     public void listenKafkaEvent(@Payload String message,
                                  @Header(KafkaHeaders.RECEIVED_PARTITION) int partition) throws JsonProcessingException {
         final KafkaEventPayload kafkaEventPayload = objectMapper.readValue(message, KafkaEventPayload.class);
-        if (kafkaEventPayload.getKafkaEventType() == KafkaEventType.SHIPMENT_PLACED) {
-            orderService.completeOrder(kafkaEventPayload.getPayload());
+        try {
+            if (kafkaEventPayload.getKafkaEventType() == KafkaEventType.SHIPMENT_PLACED) {
+                orderService.completeOrder(kafkaEventPayload.getPayload());
+            } else if (kafkaEventPayload.getKafkaEventType() == KafkaEventType.SHIPMENT_CANCELED) {
+                orderService.failOrder(kafkaEventPayload.getPayload());
+            }
+            log.info("Transaction completed with order id {}", kafkaEventPayload.getPayload().getId());
+        }catch (Exception e) {
+            kafkaEventPublisher.publishKafkaEvent(KAFKA_TOPIC_ORDER_FAILED, KafkaEventType.ORDER_FAILED, kafkaEventPayload.getPayload());
+            log.error("Order failing id {}", kafkaEventPayload.getPayload().getId());
         }
-        if (kafkaEventPayload.getKafkaEventType() == KafkaEventType.SHIPMENT_CANCELED) {
-            orderService.failOrder(kafkaEventPayload.getPayload());
-        }
-        log.info("Transaction completed with order id {}", kafkaEventPayload.getPayload().getId());
     }
 
 
