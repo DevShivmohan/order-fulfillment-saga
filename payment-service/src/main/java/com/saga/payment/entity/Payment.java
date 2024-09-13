@@ -1,5 +1,6 @@
 package com.saga.payment.entity;
 
+import com.saga.choreography.dto.PaymentOperationCode;
 import com.saga.choreography.dto.PaymentStatus;
 import com.saga.choreography.entity.BaseEntity;
 import jakarta.persistence.Column;
@@ -27,5 +28,8 @@ public class Payment extends BaseEntity {
     private Double amount;
 
     @Enumerated(EnumType.STRING)
-    private PaymentStatus status;
+    private PaymentOperationCode paymentOperationCode;
+
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus paymentStatus;
 }

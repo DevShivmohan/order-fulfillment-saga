@@ -1,5 +1,6 @@
 package com.saga.payment.service.impl;
 
+import com.saga.choreography.dto.PaymentOperationCode;
 import com.saga.choreography.dto.PaymentStatus;
 import com.saga.choreography.dto.res.OrderResponseDto;
 import com.saga.choreography.dto.res.PaymentResponseDto;
@@ -28,7 +29,8 @@ public class PaymentServiceImpl implements PaymentService {
         log.info("Making the payment of order id {} with amount {}", orderResponseDto.getId(), orderResponseDto.getAmount());
         final Payment payment = new Payment();
         payment.setOrderId(orderResponseDto.getId());
-        payment.setStatus(PaymentStatus.DEBIT);
+        payment.setPaymentOperationCode(PaymentOperationCode.DEBIT);
+        payment.setPaymentStatus(PaymentStatus.COMPLETED);
         payment.setAmount(orderResponseDto.getAmount());
         return modelMapper.map(paymentRepository.saveAndFlush(payment), PaymentResponseDto.class);
     }
@@ -41,7 +43,9 @@ public class PaymentServiceImpl implements PaymentService {
             return null;
         }
         log.info("Rolling back the payment of order id {} with amount {}", orderResponseDto.getId(), orderResponseDto.getAmount());
-        debitedPayment.get().setStatus(PaymentStatus.CREDIT);
+        debitedPayment.get()
+                .setPaymentStatus(PaymentStatus.REVERSED);
+        debitedPayment.get().setPaymentOperationCode(PaymentOperationCode.CREDIT);
         return modelMapper.map(paymentRepository.saveAndFlush(debitedPayment.get()), PaymentResponseDto.class);
     }
 }
