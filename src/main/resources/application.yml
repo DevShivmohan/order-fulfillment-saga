@@ -1,0 +1,18 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /local-txn-service/v1
+spring:
+  application:
+    name: local-service
+  datasource:
+    name: local-service
+    url: jdbc:mysql://localhost:3306/local_txn_db
+    username: shiv
+    password: shiv
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
