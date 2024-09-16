@@ -38,7 +38,7 @@ public class PaymentActivitiesImpl implements PaymentActivities {
     public void reversePayment(OrderDTO orderDTO) {
         log.info("Reversing payment");
         final var dbPayments= paymentService.getPaymentsByOrderId(orderDTO.getOrderId());
-        dbPayments.stream()
+        dbPayments
                 .forEach(payment -> {
                     payment.setOperationCode(OperationCode.CREDIT);
                     payment.setStatus(Status.REVERSED);
