@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 @AllArgsConstructor
@@ -47,5 +49,10 @@ public class PaymentServiceImpl implements PaymentService {
                 .setPaymentStatus(PaymentStatus.REVERSED);
         debitedPayment.get().setPaymentOperationCode(PaymentOperationCode.CREDIT);
         return modelMapper.map(paymentRepository.saveAndFlush(debitedPayment.get()), PaymentResponseDto.class);
+    }
+
+    @Override
+    public Optional<Payment> fetchPaymentByOrderId(String orderId) {
+        return paymentRepository.findPaymentByOrderId(orderId);
     }
 }

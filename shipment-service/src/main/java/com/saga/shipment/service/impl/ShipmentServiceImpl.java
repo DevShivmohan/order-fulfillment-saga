@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @Slf4j
 @AllArgsConstructor
@@ -40,5 +42,10 @@ public class ShipmentServiceImpl implements ShipmentService {
         }
         shipmentPlaced.get().setStatus(ShipmentStatus.FAILED);
         return modelMapper.map(shipmentRepository.saveAndFlush(shipmentPlaced.get()), ShipmentResponseDto.class);
+    }
+
+    @Override
+    public Optional<Shipment> fetchShipmentByOrderId(String orderId) {
+        return shipmentRepository.fetchShipmentByOrderId(orderId);
     }
 }
