@@ -8,6 +8,7 @@ import com.saga.choreography.event.KafkaEventType;
 import com.saga.shipment.service.ShipmentService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.annotation.DltHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.kafka.retrytopic.TopicSuffixingStrategy;
@@ -61,5 +62,16 @@ public class KafkaEventConsumer {
         final KafkaEventPayload kafkaEventPayload = objectMapper.readValue(message, KafkaEventPayload.class);
         shipmentService.cancelShipment(kafkaEventPayload.getPayload());
         kafkaEventPublisher.publishKafkaEvent(KafkaEventConstants.KAFKA_TOPIC_SHIPMENT_CANCELLED, KafkaEventType.SHIPMENT_CANCELED, kafkaEventPayload.getPayload());
+    }
+
+
+    /**
+     * Handle for manual interventions
+     *
+     * @param data
+     */
+    @DltHandler
+    public void dltHandlerMessages(@Payload String data) {
+        log.warn("DLT handler logged data as payload {}", data);
     }
 }

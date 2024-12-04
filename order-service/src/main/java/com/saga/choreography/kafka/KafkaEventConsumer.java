@@ -7,6 +7,7 @@ import com.saga.choreography.event.KafkaEventType;
 import com.saga.choreography.service.OrderService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.annotation.DltHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.kafka.retrytopic.TopicSuffixingStrategy;
@@ -64,5 +65,15 @@ public class KafkaEventConsumer {
             orderService.failOrder(kafkaEventPayload.getPayload());
         }
         log.info("Transaction failed with order id {}", kafkaEventPayload.getPayload().getId());
+    }
+
+    /**
+     * Handle for manual interventions
+     *
+     * @param data
+     */
+    @DltHandler
+    public void dltHandlerMessages(@Payload String data) {
+        log.warn("DLT handler logged data as payload {}", data);
     }
 }
